@@ -6,7 +6,7 @@ An Asustor NAS community open source version of a dropbox API v2 sync upload app
 ![Screenshot 2](/screenshots/Screenshot 2016-10-16 15:53:32.png)
 
 ### Why bother?
-I couldn't get the [Asustor provided dropbox app](http://forum.asustor.com/viewforum.php?f=59) reliable and safely working. The full story is here: http://forum.asustor.com/viewtopic.php?f=59&t=8202
+I couldn't get the [Asustor provided dropbox app](http://forum.asustor.com/viewforum.php?f=59) reliably and safely working. The full story is here: http://forum.asustor.com/viewtopic.php?f=59&t=8202
 
 ### What does this do?
 At the present time this app only supports dropbox upload. Full 2 way sync may be supported in the future.
