@@ -1,2 +1,5 @@
 .idea/*
-pkg/*
+pkg/bin/*
+pkg/CONTROL/*
+pkg/lock/*
+pkg/log/*
