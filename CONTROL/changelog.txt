@@ -1,0 +1,14 @@
+This is the v1.0 initial release of a dropbox API v2 upload app based on the updown.py script example included in the dropbox python sdk here:
+github.com/dropbox/dropbox-sdk-python/tree/master/example/updown.py
+This app uploads the contents of a given folder to dropbox
+
+v1.0 features:
+1) updown.py has been battle hardened and extended to make it more suited for unattended scheduled operation
+2) Supports NAS -> dropbox upload only
+3) Has no ADM or web UI whatsoever
+4) Implements an internal locking mechanism in /usr/local/AppCentral/community-dropbox-upload/lock to enable execution of multiple concurrent instances of the script for different rootdir source folders
+5) Is slow on large dropbox accounts / data stores but is lightweight, will not thrash disks and can be depended on to eventually complete
+6) The installer ensures all required python modules are present (pip install six, pip install lockfile, pip install dropbox)
+7) The installer by default creates a single cron job containing a placeholder for the required dropbox oauth2 token. Multiple cron jobs can be created to execute the script on any required schedule(s)
+8) Logs minimal output to the /usr/local/AppCentral/community-dropbox-upload/log folder
+

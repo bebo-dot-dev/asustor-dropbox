@@ -1,0 +1,17 @@
+{
+   "general":{
+      "package":"community-dropbox-upload",
+      "name":"Community Dropbox Upload",
+      "version":"1.0.0.0",
+      "depends":[
+	"python(>=2.7.10.r10)"
+      ],
+      "conflicts":[],
+      "developer":"jjssoftware",
+      "maintainer":"jjssoftware",
+      "email":"joe@jjssoftware.co.uk",
+      "website":"https://github.com/jjssoftware/asustor-dropbox",
+      "architecture":"any",
+      "firmware":"2.6.0"
+   }
+ }
