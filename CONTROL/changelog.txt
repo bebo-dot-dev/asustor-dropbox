@@ -2,6 +2,9 @@ This is the v1.0 initial release of a dropbox API v2 upload app based on the upd
 github.com/dropbox/dropbox-sdk-python/tree/master/example/updown.py
 This app uploads the contents of a given folder to dropbox
 
+v1.1
+1) Improved the post-install.sh shell script to add support for existing cron job detection. The installer will no longer add the cron job to the root crontab file if it's already present
+
 v1.0 features:
 1) updown.py has been battle hardened and extended to make it more suited for unattended scheduled operation
 2) Supports NAS -> dropbox upload only
