@@ -22,3 +22,31 @@ The [pre-compiled apk packages](/../../releases) published in the release page a
 
 1. .apk package files can be unzipped for review with any decent tool that supports compressed zip files. 
 2. You can review the contents of the [updown.py python script](/bin/updown.py) to satisfy yourself that it's safe for use on your NAS box and once you're happy you can then [register](http://developer.asustor.com/user/registration) for an Asustor developer account so you read the docs to learn about how to compile your own .apk package with the [Asustor apkg tool](http://developer.asustor.com/document/APKG_Utilities_2.0.zip)
+
+### updown.py python script cli options
+Just execute the script at the command line with the --help option to see arguments that are supported:
+```bash
+joe@joes-HP-EliteBook-8470p ~/Code/python-asustor-NAS-dropbox-sync/bin $ ./updown.py --help
+usage: updown.py [-h] [--token TOKEN] [--yes] [--no] [--default] [--hidden]
+                 [--upload] [--download] [--sync]
+                 [dropbox_folder] [local_sync_folder]
+
+Synchronise a local folder with a remote Dropbox account
+
+positional arguments:
+  dropbox_folder     The target folder in your Dropbox account
+  local_sync_folder  The local target folder to upload / populate from Dropbox
+                     / sync
+
+optional arguments:
+  -h, --help         show this help message and exit
+  --token TOKEN      Access token (see
+                     https://www.dropbox.com/developers/apps)
+  --yes, -y          Automated answer yes to all runtime prompt questions
+  --no, -n           Automated answer no to all runtime prompt questions
+  --default, -df     Take the default answer to all runtime prompt questions
+  --hidden, -ih      Upload hidden files
+  --upload, -u       Upload mode enabled
+  --download, -d     Download mode enabled
+  --sync, -s         Full upload/download sync mode enabled
+```
