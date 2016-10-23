@@ -9,7 +9,7 @@ An Asustor NAS community open source version of a dropbox API v2 sync app
 I couldn't get the [Asustor provided dropbox app](http://forum.asustor.com/viewforum.php?f=59) reliably and safely working. The full story is here: http://forum.asustor.com/viewtopic.php?f=59&t=8202
 
 ### What does this do?
-This app supports syncing with dropbox in one of the following modes: upload, download, full 2 way sync.
+This app supports syncing with dropbox in one of the following modes: upload, download, full 2 way sync. Thanks go to the dropbox team / dropbox python sdk maintainers for the original supplied [updown.py sample](https://github.com/dropbox/dropbox-sdk-python/blob/master/example/updown.py)
 
 ### How do I set this thing up?
 This app can be easily installed via the ADM App Central manual install feature using one of the [pre-compiled apk package release files](/../../releases). There is no UI at the present time so once installed, some manual configuration is required. Read [the setup guide](setup.md) for details.
