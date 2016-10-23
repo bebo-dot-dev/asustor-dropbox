@@ -1,7 +1,7 @@
 {
    "general":{
-      "package":"community-dropbox-upload",
-      "name":"Community Dropbox Upload",
+      "package":"community-dropbox-sync",
+      "name":"Community Dropbox Sync",
       "version":"2.0.0.0",
       "depends":[
 	"python(>=2.7.10.r10)"
