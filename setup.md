@@ -9,7 +9,7 @@ These are the manual setup steps for this app
 
   The crontab line added to the end of this file will look like this:
     
-  `0 */8 * * * python /usr/local/AppCentral/community-dropbox-upload/bin/updown.py --token [YOUR_OAUTH2_TOKEN] -y ~/ /home/admin/datasync/`
+  `0 */8 * * * python /usr/local/AppCentral/community-dropbox-upload/bin/updown.py --token [YOUR_OAUTH2_TOKEN] -y -u ~/ /home/admin/datasync/`
     
   There are a few things to note about this crontab job:
   * `0 */8 * * *` represents a schedule that will execute every 8 hours. You can change this to whatever schedule you need. http://crontab.guru/ is a useful website for creating and verifying a cron schedule.
@@ -26,5 +26,5 @@ These are the manual setup steps for this app
 2. There's nothing to stop you removing the root account crontab file entry and adding other crontab entries to other users' crontab files as required
 3. Mutliple schedules can be added for different NAS source sync folders
 4. Any valid dropbox oauth2 token can be used so if you need to sync to multiple different dropbox accounts just create dropbox apps for those accounts here: https://www.dropbox.com/developers/apps
-5. When the scheduled job runs on it's schedule it will log progress and eventual completion to a log file as that will look like [this sample](log/20161016.093220814263.log). Log files are maintained at this location:
+5. When the scheduled job runs on it's schedule it will log progress and eventual completion to a log file as that will look like [this sample](log/20161023.082703645250.log). Log files are maintained at this location:
 `/usr/local/AppCentral/community-dropbox-upload/log`

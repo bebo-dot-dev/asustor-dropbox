@@ -1,4 +1,4 @@
-This is a community open source version of a dropbox API v2 sync upload app
+This is a community open source version of a dropbox API v2 sync app
 Based on the updown.py example included in the dropbox python sdk here: https://github.com/dropbox/dropbox-sdk-python/tree/master/example/updown.py
 This project is hosted here: https://github.com/jjssoftware/asustor-dropbox
 See the changelog for further details
