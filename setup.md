@@ -30,4 +30,4 @@ These are the manual setup steps for this app
 3. Mutliple schedules can be added for different NAS source sync folders
 4. Any valid dropbox oauth2 token can be used so if you need to sync to multiple different dropbox accounts just create dropbox apps for those accounts here: https://www.dropbox.com/developers/apps
 5. When the scheduled job runs on it's schedule it will log progress and eventual completion to a log file as that will look like [this sample](log/20161023.082703645250.log). Log files are maintained at this location:
-`/usr/local/AppCentral/community-dropbox-upload/log`
+`/usr/local/AppCentral/community-dropbox-sync/log`
