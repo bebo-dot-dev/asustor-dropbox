@@ -16,7 +16,7 @@ These are the manual setup steps for this app
     
   There are a few things to note about this crontab job:
   * `0 */8 * * *` represents a schedule that will execute every 8 hours. You can change this to whatever schedule you need. http://crontab.guru/ is a useful website for creating and verifying a cron schedule.
-  * `[YOUR_OAUTH2_TOKEN]` is a placeholder for the required dropbox oauth2 token and this needs to be **completely replaced** (replace the square brackets too) with a real and valid dropbox oath2 token. See step 4. for further details to see how to generate a valid dropbox oath2 token.
+  * `[YOUR_OAUTH2_TOKEN]` is a placeholder for the required dropbox oauth2 token and this needs to be **completely replaced** (replace the square brackets too) with a real and valid dropbox oath2 token. See step 4. for further details to see how to generate a valid dropbox oath2 token.
   * `~/` is the target path in the dropbox account and this should be changed as required
   * `/home/admin/datasync/` is a local source datasync folder located somewhere on the NAS that is to be uploaded to dropbox and this path should be changed as required
  
