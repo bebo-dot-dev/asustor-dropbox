@@ -33,11 +33,13 @@ TOKEN = ''
 
 parser = argparse.ArgumentParser(description='Synchronise a local folder with a remote Dropbox account')
 parser.add_argument('dropbox_folder', nargs='?', default='Downloads', help='The target folder in your Dropbox account')
-parser.add_argument('local_sync_folder', nargs='?', default='~/Downloads', help='The local target folder to upload / populate from Dropbox / sync')
+parser.add_argument('local_sync_folder', nargs='?', default='~/Downloads',
+                    help='The local target folder to upload / populate from Dropbox / sync')
 parser.add_argument('--token', default=TOKEN, help='Access token (see https://www.dropbox.com/developers/apps)')
 parser.add_argument('--yes', '-y', action='store_true', help='Automated answer yes to all runtime prompt questions')
 parser.add_argument('--no', '-n', action='store_true', help='Automated answer no to all runtime prompt questions')
-parser.add_argument('--default', '-df', action='store_true', help='Take the default answer to all runtime prompt questions')
+parser.add_argument('--default', '-df', action='store_true',
+                    help='Take the default answer to all runtime prompt questions')
 parser.add_argument('--hidden', '-ih', action='store_true', help='Upload hidden files')
 parser.add_argument('--upload', '-u', action='store_true', help='Upload mode enabled')
 parser.add_argument('--download', '-d', action='store_true', help='Download mode enabled')
@@ -67,7 +69,6 @@ sys.excepthook = handle_exception
 
 # main procedure
 def main():
-
     global start_time
     start_time = time.time()
 
@@ -91,7 +92,12 @@ def main():
     download_result = (0, 0, 0)
     if args.download or args.sync:
         dropbox_root = dropbox_folder.replace('~', '')
-        download_result = traverse_dropbox_folders(dbx, dropbox_root, local_sync_folder, args)
+        if dropbox_root == '/':
+            dropbox_root = ''
+        if test_dropbox_folder(dbx, dropbox_root):
+            download_result = traverse_dropbox_folders(dbx, dropbox_root, local_sync_folder, args)
+        else:
+            print('unable to start dropbox files download')
 
     # process complete
     complete_process(
@@ -105,7 +111,6 @@ def main():
 
 # parses and validates cli arguments passed to this script
 def validate_args():
-
     args = parser.parse_args()
     if sum([bool(b) for b in (args.yes, args.no, args.default)]) > 1:
         abortProcess('At most one of --yes, --no, --default is allowed', 2)
@@ -114,7 +119,9 @@ def validate_args():
         abortProcess('--token is mandatory', 2)
 
     if args.token == '[YOUR_OAUTH2_TOKEN]':
-        abortProcess('--token == [YOUR_OAUTH2_TOKEN] and it needs to be correctly configured. Visit https://www.dropbox.com/developers/apps, create a new app and generate an oauth2 access token', 2)
+        abortProcess(
+            '--token == [YOUR_OAUTH2_TOKEN] and it needs to be correctly configured. Visit https://www.dropbox.com/developers/apps, create a new app and generate an oauth2 access token',
+            2)
 
     dropbox_folder = args.dropbox_folder
     local_sync_folder = os.path.expanduser(args.local_sync_folder)
@@ -136,7 +143,6 @@ def validate_args():
 
 # traverses local folders in the given local_sync_folder tree and uploads files
 def traverse_local_folders(dbx, local_sync_folder, dropbox_folder, args):
-
     upload_new_file_count = 0
     upload_updated_file_count = 0
     upload_byte_count = 0
@@ -169,7 +175,8 @@ def traverse_local_folders(dbx, local_sync_folder, dropbox_folder, args):
                     meta_data = listing[normalized_filename]
                     modified_time = os.path.getmtime(full_filename)
                     modified_datetime = datetime.datetime(*time.gmtime(modified_time)[:6])
-                    if isinstance(meta_data, dropbox.files.FileMetadata) and modified_datetime == meta_data.client_modified and file_size == meta_data.size:
+                    if isinstance(meta_data,
+                                  dropbox.files.FileMetadata) and modified_datetime == meta_data.client_modified and file_size == meta_data.size:
                         print(filename.encode('ascii', 'ignore'), 'is already synced [stats match]')
                     else:
                         print(filename.encode('ascii', 'ignore'), 'exists with different stats, downloading')
@@ -209,9 +216,19 @@ def traverse_local_folders(dbx, local_sync_folder, dropbox_folder, args):
     return upload_new_file_count, upload_updated_file_count, upload_byte_count
 
 
+# returns an indicator whether the given path exists on dropbox
+def test_dropbox_folder(dbx, path):
+    # noinspection PyBroadException
+    try:
+        dbx.files_list_folder(path)
+        return True
+    except Exception as ex:
+        print('dropbox path lookup failure for ', path.encode('ascii', 'ignore'))
+        return False
+
+
 # traverses remote dropbox folders and downloads files
 def traverse_dropbox_folders(dbx, path, local_root_dir, args):
-
     global dropbox_traverse_count
     dl_file_count = 0
     dl_file_update_count = 0
@@ -221,7 +238,7 @@ def traverse_dropbox_folders(dbx, path, local_root_dir, args):
     try:
         folder_metadata = dbx.files_list_folder(path)
     except (dropbox.exceptions.ApiError, Exception) as err:
-        print('files_download failed for', path.encode('ascii', 'ignore'), err)
+        print('drop box folder traversal failure. files_list_folder failed for', path.encode('ascii', 'ignore'), err)
 
     if folder_metadata is not None:
         result = process_metadata_entries(dbx, folder_metadata.entries, path, local_root_dir, args)
@@ -229,7 +246,7 @@ def traverse_dropbox_folders(dbx, path, local_root_dir, args):
         dl_file_update_count += result[1]
         dl_byte_count += result[2]
 
-    while folder_metadata.has_more:
+    while folder_metadata is not None and folder_metadata.has_more:
         folder_metadata = None
 
         try:
@@ -250,7 +267,6 @@ def traverse_dropbox_folders(dbx, path, local_root_dir, args):
 
 # processes remote dropbox file and folder metadata
 def process_metadata_entries(dbx, entries, path, local_root_dir, args):
-
     dl_file_count = 0
     dl_file_update_count = 0
     dl_byte_count = 0
@@ -266,11 +282,17 @@ def process_metadata_entries(dbx, entries, path, local_root_dir, args):
 
             print('folder: %s' % full_dropbox_folder_name.encode('ascii', 'ignore'))
 
-            trimmed_dropbox_folder_name = full_dropbox_folder_name[len(dropbox_root_folder):].strip('/')
+            trimmed_dropbox_folder_name = (
+                full_dropbox_folder_name[len(dropbox_root_folder):].strip('/')
+                if dropbox_root_folder != '/'
+                else full_dropbox_folder_name.strip('/'))
+
             full_local_folder_name = os.path.join(local_root_dir, trimmed_dropbox_folder_name)
             if not os.path.exists(full_local_folder_name):
                 ensure_and_get_folder(full_local_folder_name, False)
 
+            if path == '':
+                path = '/'
             sub_traverse = traverse_dropbox_folders(dbx, os.path.join(path, entry.name), local_root_dir, args)
             dl_file_count += sub_traverse[0]
             dl_file_update_count += sub_traverse[1]
@@ -454,7 +476,8 @@ def upload(dbx, fullname, folder, subfolder, name, overwrite=False):
             else:
                 # chunked upload for files > 10mb
                 upload_session_start_result = dbx.files_upload_session_start(f.read(CHUNK_SIZE))
-                cursor = dropbox.files.UploadSessionCursor(session_id=upload_session_start_result.session_id, offset=f.tell())
+                cursor = dropbox.files.UploadSessionCursor(session_id=upload_session_start_result.session_id,
+                                                           offset=f.tell())
                 commit_info = dropbox.files.CommitInfo(path=destination_path)
                 commit_info.client_modified = file_modified
                 commit_info.mode = mode
@@ -467,21 +490,28 @@ def upload(dbx, fullname, folder, subfolder, name, overwrite=False):
                         cursor.offset = f.tell()
 
         except (dropbox.exceptions.ApiError, dropbox.exceptions.InternalServerError) as err:
-            print('*** API upload error for', fullname.encode('ascii', 'ignore'), destination_path.encode('ascii', 'ignore'), err)
+            print('*** API upload error for', fullname.encode('ascii', 'ignore'),
+                  destination_path.encode('ascii', 'ignore'), err)
             app_logger.error('\n')
-            logging.exception('Caught a dropbox exception at upload time; the process will continue. %s, %s, %s', mode._tag, fullname, destination_path)
+            logging.exception('Caught a dropbox exception at upload time; the process will continue. %s, %s, %s',
+                              mode._tag, fullname, destination_path)
             return None
 
         except requests.exceptions.ReadTimeout as to:
-            print('*** Timeout upload exception for', fullname.encode('ascii', 'ignore'), destination_path.encode('ascii', 'ignore'), to)
+            print('*** Timeout upload exception for', fullname.encode('ascii', 'ignore'),
+                  destination_path.encode('ascii', 'ignore'), to)
             app_logger.error('\n')
-            logging.exception('Caught a request timeout exception at upload time; the process will continue. %s, %s, %s', mode._tag, fullname, destination_path)
+            logging.exception(
+                'Caught a request timeout exception at upload time; the process will continue. %s, %s, %s', mode._tag,
+                fullname, destination_path)
             return None
 
         except Exception as e:
-            print ('*** General upload exception for', fullname.encode('ascii', 'ignore'), destination_path.encode('ascii', 'ignore'), e)
+            print('*** General upload exception for', fullname.encode('ascii', 'ignore'),
+                  destination_path.encode('ascii', 'ignore'), e)
             app_logger.error('\n')
-            logging.exception('Caught a general exception at upload time; the process will continue. %s, %s, %s', mode._tag, fullname, destination_path)
+            logging.exception('Caught a general exception at upload time; the process will continue. %s, %s, %s',
+                              mode._tag, fullname, destination_path)
             return None
 
     print('uploaded as', res.name.encode('utf8', 'ignore'))
@@ -550,7 +580,7 @@ def app_base_path():
 
 
 # Returns the run-time log directory for this script in the file system
-def ensure_and_get_folder(folder_name, use_base_path = True):
+def ensure_and_get_folder(folder_name, use_base_path=True):
     full_folder_path = (app_base_path() + '/' + folder_name if use_base_path else folder_name)
     try:
         os.makedirs(full_folder_path)
@@ -601,8 +631,9 @@ def log_info_event(log_string, shutdown=False):
     if not app_logger:
         log_filename = ensure_and_get_folder('log') + datetime.datetime.utcnow().strftime('%Y%m%d.%H%M%S%f') + '.log'
         app_logger = logging.getLogger('dropbox_app_logger')
-        logging.basicConfig(filename=log_filename,level=logging.INFO,format='%(asctime)s %(levelname)s %(message)s', datefmt='%d/%m/%Y %H:%M:%S')
-        #quieten down noisy module loggers
+        logging.basicConfig(filename=log_filename, level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s',
+                            datefmt='%d/%m/%Y %H:%M:%S')
+        # quieten down noisy module loggers
         logging.getLogger('dropbox').setLevel(logging.WARNING)
         logging.getLogger('requests.packages.urllib3').setLevel(logging.WARNING)
     app_logger.info(log_string)
@@ -621,8 +652,7 @@ def log_runtime():
 
 
 # self managed log_runtime procedure
-def check_log_runtime(loop_count, file_count, max_loops = 3000, max_files = 300):
-
+def check_log_runtime(loop_count, file_count, max_loops=3000, max_files=300):
     loop_count += 1
 
     loop_count_remainder = divmod(loop_count, max_loops)
@@ -649,7 +679,6 @@ def complete_process(
         download_new_file_count,
         download_updated_file_count,
         download_byte_count):
-
     log_info_event('New files uploaded: {}'.format(upload_new_file_count))
     log_info_event('Updated files uploaded: {}'.format(upload_updated_file_count))
     log_info_event('Total bytes uploaded: {}'.format(upload_byte_count))
