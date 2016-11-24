@@ -2,7 +2,7 @@
 
 CRON_JOB_LABEL="# ~~~~~~ community dropbox job ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 CRON_JOB_LABEL_END="# ~~~~~~ community dropbox job end ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-CRON_JOB_UNIQUE_CONTENT="community-dropbox-upload/bin/updown.py"
+CRON_JOB_UNIQUE_CONTENT="community-dropbox-sync/bin/updown.py"
 
 CURRENT_USER_NAME=$(id -u -n) 
 

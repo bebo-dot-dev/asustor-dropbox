@@ -25,6 +25,9 @@ import unicodedata
 import dropbox
 from dropbox.files import FileMetadata
 
+import locale
+locale.setlocale(locale.LC_ALL, ('en', 'utf-8'))
+
 if sys.version.startswith('2'):
     input = raw_input
 
@@ -280,49 +283,70 @@ def process_metadata_entries(dbx, entries, path, local_root_dir, args):
             # folder traversal
             full_dropbox_folder_name = os.path.join(path, entry.name.strip('/'))
 
-            print('folder: %s' % full_dropbox_folder_name.encode('ascii', 'ignore'))
+            try:
 
-            trimmed_dropbox_folder_name = (
-                full_dropbox_folder_name[len(dropbox_root_folder):].strip('/')
-                if dropbox_root_folder != '/'
-                else full_dropbox_folder_name.strip('/'))
+                print('folder: %s' % full_dropbox_folder_name.encode('ascii', 'ignore'))
 
-            full_local_folder_name = os.path.join(local_root_dir, trimmed_dropbox_folder_name)
-            if not os.path.exists(full_local_folder_name):
-                ensure_and_get_folder(full_local_folder_name, False)
+                trimmed_dropbox_folder_name = (
+                    full_dropbox_folder_name[len(dropbox_root_folder):].strip('/')
+                    if dropbox_root_folder != '/'
+                    else full_dropbox_folder_name.strip('/'))
 
-            if path == '':
-                path = '/'
-            sub_traverse = traverse_dropbox_folders(dbx, os.path.join(path, entry.name), local_root_dir, args)
-            dl_file_count += sub_traverse[0]
-            dl_file_update_count += sub_traverse[1]
-            dl_byte_count += sub_traverse[2]
+                full_local_folder_name = os.path.join(local_root_dir, trimmed_dropbox_folder_name)
+                if not os.path.exists(full_local_folder_name):
+                    ensure_and_get_folder(full_local_folder_name, False)
+
+                if path == '':
+                    path = '/'
+                sub_traverse = traverse_dropbox_folders(dbx, os.path.join(path, entry.name), local_root_dir, args)
+                dl_file_count += sub_traverse[0]
+                dl_file_update_count += sub_traverse[1]
+                dl_byte_count += sub_traverse[2]
+
+            except UnicodeEncodeError:
+                print('folder: %s caused a UnicodeEncodeError' % full_dropbox_folder_name.encode('ascii', 'ignore'))
+
+                log_info_event(
+                    'Unable to download and save this folder due to a UnicodeEncodeError. ' +
+                    'Check this folder path (invalid chars have been stripped): ' +
+                    full_dropbox_folder_name.encode('ascii', 'ignore'))
 
         else:
 
             # file traversal
             full_dropbox_filename = os.path.join(path, entry.name.strip('/'))
 
-            print('file: %s' % full_dropbox_filename.encode('ascii', 'ignore'))
+            try:
 
-            trimmed_dropbox_filename = full_dropbox_filename[len(dropbox_root_folder):].strip('/')
+                print('file: %s' % full_dropbox_filename.encode('ascii', 'ignore'))
 
-            full_local_filename = os.path.join(local_root_dir, trimmed_dropbox_filename)
-            if not os.path.exists(full_local_filename):
-                if yesno('Download and save %s' % full_dropbox_filename, True, args):
-                    file_data = download_and_save(dbx, full_dropbox_filename, full_local_filename)
-                    if file_data is not None:
-                        dl_file_count += 1
-                        dl_byte_count += len(file_data)
-            else:
-                local_file_modified_time = os.path.getmtime(full_local_filename)
-                local_file_modified_datetime = datetime.datetime(*time.gmtime(local_file_modified_time)[:6])
-                if entry.client_modified > local_file_modified_datetime:
-                    if yesno('Download and overwrite %s' % full_dropbox_filename, True, args):
+                trimmed_dropbox_filename = full_dropbox_filename[len(dropbox_root_folder):].strip('/')
+
+                full_local_filename = os.path.join(local_root_dir, trimmed_dropbox_filename)
+
+                if not os.path.exists(full_local_filename):
+                    if yesno('Download and save %s' % full_dropbox_filename, True, args):
                         file_data = download_and_save(dbx, full_dropbox_filename, full_local_filename)
                         if file_data is not None:
-                            dl_file_update_count += 1
+                            dl_file_count += 1
                             dl_byte_count += len(file_data)
+                else:
+                    local_file_modified_time = os.path.getmtime(full_local_filename)
+                    local_file_modified_datetime = datetime.datetime(*time.gmtime(local_file_modified_time)[:6])
+                    if entry.client_modified > local_file_modified_datetime:
+                        if yesno('Download and overwrite %s' % full_dropbox_filename, True, args):
+                            file_data = download_and_save(dbx, full_dropbox_filename, full_local_filename)
+                            if file_data is not None:
+                                dl_file_update_count += 1
+                                dl_byte_count += len(file_data)
+
+            except UnicodeEncodeError:
+                print('file: %s caused a UnicodeEncodeError' % full_dropbox_filename.encode('ascii', 'ignore'))
+
+                log_info_event(
+                    'Unable to download and save this file due to a UnicodeEncodeError. ' +
+                    'Check this file path (invalid chars have been stripped): ' +
+                    full_dropbox_filename.encode('ascii', 'ignore'))
 
     return dl_file_count, dl_file_update_count, dl_byte_count
 
@@ -472,7 +496,7 @@ def upload(dbx, fullname, folder, subfolder, name, overwrite=False):
 
             if file_size <= MAX_SIZE:
                 # one shot upload
-                res = dbx.files_upload(f, destination_path, mode, client_modified=file_modified, mute=True)
+                res = dbx.files_upload(f.read(), destination_path, mode, client_modified=file_modified, mute=True)
             else:
                 # chunked upload for files > 10mb
                 upload_session_start_result = dbx.files_upload_session_start(f.read(CHUNK_SIZE))
