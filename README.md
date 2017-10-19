@@ -1,9 +1,9 @@
 # asustor-dropbox
 An Asustor NAS community open source version of a dropbox API v2 sync app
 
-![Screenshot 1](/screenshots/Screenshot 2016-10-16 15:52:34.png)
+![Screenshot 1](https://github.com/jjssoftware/asustor-dropbox/blob/master/screenshots/Screenshot%202016-10-16%2015:52:34.png)
 
-![Screenshot 2](/screenshots/Screenshot 2016-10-16 15:53:32.png)
+![Screenshot 2](https://github.com/jjssoftware/asustor-dropbox/blob/master/screenshots/Screenshot%202016-10-16%2015:53:32.png)
 
 ### Why bother?
 I couldn't get the [Asustor provided dropbox app](http://forum.asustor.com/viewforum.php?f=59) reliably and safely working. The full story is here: http://forum.asustor.com/viewtopic.php?f=59&t=8202
