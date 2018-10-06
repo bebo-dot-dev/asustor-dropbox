@@ -97,6 +97,7 @@ def main():
         dropbox_root = dropbox_folder.replace('~', '')
         if dropbox_root == '/':
             dropbox_root = ''
+        download_result = traverse_dropbox_folders(dbx, dropbox_root, local_sync_folder, args)
         if test_dropbox_folder(dbx, dropbox_root):
             download_result = traverse_dropbox_folders(dbx, dropbox_root, local_sync_folder, args)
         else:
@@ -225,7 +226,7 @@ def test_dropbox_folder(dbx, path):
     try:
         dbx.files_list_folder(path)
         return True
-    except Exception as ex:
+    except:
         print('dropbox path lookup failure for ', path.encode('ascii', 'ignore'))
         return False
 
@@ -359,7 +360,9 @@ def is_existing_valid_filename(args, filename):
         print('Skipping hidden file:', filename.encode('ascii', 'ignore'))
     elif filename.lower() in banned_files:
         print('Skipping banned file:', filename.encode('ascii', 'ignore'))
-    elif filename.startswith('@') or filename.endswith('~'):
+    elif filename.startswith('@') or filename.startswith('~$') or filename.startswith('.~') or \
+            (filename.startswith('~') and filename.endswith('.tmp')) or \
+            (filename.startswith('.~') and filename.endswith('#')):
         print('Skipping temporary file:', filename.encode('ascii', 'ignore'))
     elif filename.endswith('.pyc') or filename.endswith('.pyo'):
         print('Skipping generated file:', filename.encode('ascii', 'ignore'))
@@ -406,8 +409,7 @@ def list_folder(dbx, folder, subfolder):
         return {}
     except Exception as e:
         print('Folder listing exception for', path.encode('ascii', 'ignore'), '-- assumped empty:', e)
-        app_logger.error('\n')
-        logging.exception('Folder listing failed for %s', path)
+        app_logger.error('Folder listing failed for {0} {1}'.format(path, e))
         return {}
     else:
         rv = {}
@@ -516,26 +518,25 @@ def upload(dbx, fullname, folder, subfolder, name, overwrite=False):
         except (dropbox.exceptions.ApiError, dropbox.exceptions.InternalServerError) as err:
             print('*** API upload error for', fullname.encode('ascii', 'ignore'),
                   destination_path.encode('ascii', 'ignore'), err)
-            app_logger.error('\n')
-            logging.exception('Caught a dropbox exception at upload time; the process will continue. %s, %s, %s',
-                              mode._tag, fullname, destination_path)
+            app_logger.error(
+                'Caught a dropbox exception at upload time; the process will continue. {0}, {1}, {2} {3}'.format(
+                mode._tag, fullname, destination_path, err))
             return None
 
         except requests.exceptions.ReadTimeout as to:
             print('*** Timeout upload exception for', fullname.encode('ascii', 'ignore'),
                   destination_path.encode('ascii', 'ignore'), to)
-            app_logger.error('\n')
-            logging.exception(
-                'Caught a request timeout exception at upload time; the process will continue. %s, %s, %s', mode._tag,
-                fullname, destination_path)
+            app_logger.error(
+                'Caught a request timeout exception at upload time; the process will continue. {0}, {1}, {2} {3}'.format(
+                    mode._tag, fullname, destination_path, to))
             return None
 
         except Exception as e:
             print('*** General upload exception for', fullname.encode('ascii', 'ignore'),
                   destination_path.encode('ascii', 'ignore'), e)
-            app_logger.error('\n')
-            logging.exception('Caught a general exception at upload time; the process will continue. %s, %s, %s',
-                              mode._tag, fullname, destination_path)
+            app_logger.error(
+                'Caught a general exception at upload time; the process will continue. {0}, {1}, {2} {3}'.format(
+                    mode._tag, fullname, destination_path, e))
             return None
 
     print('uploaded as', res.name.encode('utf8', 'ignore'))
@@ -594,7 +595,7 @@ def checkToken(dbx):
     try:
         dbx.users_get_current_account()
         return True
-    except:
+    except Exception as e:
         return False
 
 

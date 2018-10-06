@@ -2,6 +2,9 @@ A dropbox API v2 upload/download app originally based on the updown.py script ex
 github.com/dropbox/dropbox-sdk-python/tree/master/example/updown.py
 This app supports upload/download/sync contents of a given folder with dropbox
 
+v2.3
+1) Log file output cleanup
+
 v2.2
 1) Improved dropbox tree traversal / download file unicode exception handling 
 2) Fixed the call to files_upload to cope with dropbox introduced breaking change: "File upload endpoints no longer accept file-like objects. Only byte strings are allowed"
