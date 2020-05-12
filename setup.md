@@ -14,15 +14,14 @@ These are the manual setup steps for this app
 # ~~~~~~ community dropbox job end ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ```
     
-  There are a few things to note about this crontab job:
-  * `0 */8 * * *` represents a schedule that will execute every 8 hours. You can change this to whatever schedule you need. http://crontab.guru/ is a useful website for creating and verifying a cron schedule.
-  * `[YOUR_OAUTH2_TOKEN]` is a placeholder for the required dropbox oauth2 token and this needs to be **completely replaced** (replace the square brackets too) with a real and valid dropbox oath2 token. See step 4. for further details to see how to generate a valid dropbox oath2 token.
-  * `/` is the target path in the dropbox account and this should be changed as required
-  * `/home/admin/datasync/` is a local source datasync folder located somewhere on the NAS that is to be uploaded to dropbox and this path should be changed as required
- 
-4. Create a dropbox app here: https://www.dropbox.com/developers/apps. When you create the app, the *Generated access token* is the oauth2 token thing that you need to plug into the `[YOUR_OAUTH2_TOKEN]` placeholder in the cron job
-5. Edit and save the root account crontab file mentioned in step (3) plugging in the oauth2 token you generated in step (4) along with any path changes you need to make
-6. Done!
+There are a few things to note about this crontab job:
+1. `0 */8 * * *` represents a schedule that will execute every 8 hours. You can change this to whatever schedule you need. http://crontab.guru/ is a useful website for creating and verifying a cron schedule.
+2. `[YOUR_OAUTH2_TOKEN]` is a placeholder for the required dropbox oauth2 token and this needs to be **completely replaced** (replace the square brackets too) with a real and valid dropbox oath2 token. See step 5. for further details to see how to generate a valid dropbox oath2 token.
+3. `/` is the target path in the dropbox account and this should be changed as required
+4. `/home/admin/datasync/` is a local source datasync folder located somewhere on the NAS that is to be uploaded to dropbox and this path should be changed as required
+5. Create a dropbox app here: https://www.dropbox.com/developers/apps. When you create the app, the *Generated access token* is the oauth2 token thing that you need to plug into the `[YOUR_OAUTH2_TOKEN]` placeholder in the cron job
+6. Edit and save the root account crontab file plugging in the oauth2 token that you generated in step (5) along with any path changes you need to make
+7. Done!
 
 ### Additonal Notes
 1. The crontab file used to schedule the python script doesn't actually need to be the root account crontab file; it just so happens that when the app is installed, it's installed in the context of the root user so the installer by default creates the crontab scheduled job in the root users' crontab file.
