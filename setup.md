@@ -2,7 +2,7 @@
 These are the manual setup steps for this app
 
 1. Download the latest apk from the [releases page](/../../releases)
-2. Install the apk using the ADM App Central manual install feature. This app is dependent on Python and the installer should ensure Python is installed
+2. Install the apk using the ADM App Central manual install feature. This app is dependent on Python 2.7 and the installer should ensure Python 2.7 is installed, Python 3 is not currently supported.
 3. The installer will by default create a single crontab scheduled job in the root account crontab file. The root account crontab file can be found at this location on the NAS: 
 
   `/var/spool/cron/crontabs/root`
