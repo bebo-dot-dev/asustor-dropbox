@@ -1,5 +1,4 @@
-#!/usr/local/bin/python
-
+#!/usr/bin/env python3
 """
 Uploads the contents of a given folder to Dropbox
 This is an example app for API v2
@@ -185,7 +184,7 @@ def traverse_local_folders(dbx, local_sync_folder, dropbox_folder, args):
                     else:
                         print(filename.encode('ascii', 'ignore'), 'exists with different stats, downloading')
                         res = download(dbx, dropbox_folder, sub_folder, filename)
-                        with open(full_filename) as f:
+                        with open(full_filename, 'rb') as f:
                             data = f.read()
                         if res is None:
                             print(filename.encode('ascii', 'ignore'), 'download failure')
@@ -563,15 +562,15 @@ def yesno(message, default, args):
         print(ascii_msg + '? [auto]', 'Y' if default else 'N')
         return default
     if args.yes:
-        print(ascii_msg + '? [auto] YES')
+        print(ascii_msg + '? [auto] YES'.encode('ascii'))
         return True
     if args.no:
-        print(ascii_msg + '? [auto] NO')
+        print(ascii_msg + '? [auto] NO'.encode('ascii'))
         return False
     if default:
-        ascii_msg += '? [Y/n] '
+        ascii_msg += '? [Y/n] '.encode('ascii')
     else:
-        ascii_msg += '? [N/y] '
+        ascii_msg += '? [N/y] '.encode('ascii')
     while True:
         answer = input(ascii_msg).strip().lower()
         if not answer:

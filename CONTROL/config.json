@@ -2,16 +2,16 @@
    "general":{
       "package":"community-dropbox-sync",
       "name":"Community Dropbox Sync",
-      "version":"2.3.0.0",
+      "version":"2.4.0.0",
       "depends":[
-	"python(>=2.7.10.r10)"
+	"python3(>=3.7.0.r5)"
       ],
       "conflicts":[],
-      "developer":"jjssoftware",
-      "maintainer":"jjssoftware",
-      "email":"joe@jjssoftware.co.uk",
-      "website":"https://github.com/jjssoftware/asustor-dropbox",
+      "developer":"bebo.dev",
+      "maintainer":"bebo.dev",
+      "email":"joe@bebo.dev",
+      "website":"https://github.com/bebo-dot-dev/asustor-dropbox",
       "architecture":"any",
-      "firmware":"2.6.0"
+      "firmware":"3.0"
    }
  }

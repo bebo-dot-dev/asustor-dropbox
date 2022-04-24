@@ -2,7 +2,7 @@
 These are the manual setup steps for this app
 
 1. Download the latest apk from the [releases page](/../../releases)
-2. Install the apk using the ADM App Central manual install feature. This app is dependent on Python 2.7 and the installer should ensure Python 2.7 is installed, Python 3 is not currently supported.
+2. Install the apk using the ADM App Central manual install feature. This app is dependent on Python 3 and the installer should ensure Python 3 is installed.
 3. The installer will by default create a single crontab scheduled job in the root account crontab file. The root account crontab file can be found at this location on the NAS: 
 
   `/var/spool/cron/crontabs/root`
@@ -10,7 +10,7 @@ These are the manual setup steps for this app
   The crontab line added to the end of this file will look like this:
   ```bash
 # ~~~~~~ community dropbox job ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-0 */8 * * * python /usr/local/AppCentral/community-dropbox-upload/bin/updown.py --token [YOUR_OAUTH2_TOKEN] -y -u / /home/admin/datasync/
+0 */8 * * * python3 /usr/local/AppCentral/community-dropbox-upload/bin/updown.py --token [YOUR_OAUTH2_TOKEN] -y -u / /home/admin/datasync/
 # ~~~~~~ community dropbox job end ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ```
     

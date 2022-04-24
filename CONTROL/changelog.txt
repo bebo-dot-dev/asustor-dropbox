@@ -2,6 +2,9 @@ A dropbox API v2 upload/download app originally based on the updown.py script ex
 github.com/dropbox/dropbox-sdk-python/tree/master/example/updown.py
 This app supports upload/download/sync contents of a given folder with dropbox
 
+v2.4
+1) Updated to support Python3
+
 v2.3
 1) Log file output cleanup
 
